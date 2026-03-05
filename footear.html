@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FOOTERA — Walk Different</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ink: #0a0806;
+    --cream: #f5f0e8;
+    --sand: #e8dfc8;
+    --gold: #c9a84c;
+    --rust: #b84a2f;
+    --mist: #9fa89e;
+    --white: #fdfbf7;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--ink);
+    color: var(--cream);
+    cursor: none;
+    overflow-x: hidden;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease, width 0.3s, height 0.3s, background 0.3s;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(201,168,76,0.5);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  body:hover .cursor-ring { opacity: 1; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--ink); }
+  ::-webkit-scrollbar-thumb { background: var(--gold); }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 28px 60px;
+    mix-blend-mode: difference;
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.15em;
+    color: var(--cream);
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 40px; list-style: none; }
+  .nav-links a {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cream);
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+    font-weight: 500;
+  }
+  .nav-links a:hover { opacity: 1; }
+  .nav-cta {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--gold);
+    padding: 10px 22px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.3s, transform 0.2s;
+  }
+  .nav-cta:hover { background: var(--cream); transform: scale(1.03); }
+
+  /* HERO */
+  .hero {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-left {
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0 60px 80px;
+    position: relative; z-index: 2;
+  }
+  .hero-tag {
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 1s 0.5s forwards;
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 10vw, 9rem);
+    line-height: 0.9;
+    color: var(--cream);
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 1s 0.7s forwards;
+  }
+  .hero-title em {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--gold);
+  }
+  .hero-sub {
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: var(--mist);
+    max-width: 360px;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 1s 0.9s forwards;
+  }
+  .hero-actions {
+    display: flex; gap: 20px; align-items: center;
+    opacity: 0;
+    animation: fadeUp 1s 1.1s forwards;
+  }
+  .btn-primary {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--cream);
+    padding: 16px 36px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.3s, letter-spacing 0.3s;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--gold); letter-spacing: 0.3em; }
+  .btn-ghost {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cream);
+    text-decoration: none;
+    font-weight: 500;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(245,240,232,0.3);
+    transition: border-color 0.3s, color 0.3s;
+  }
+  .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+  .hero-right {
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .hero-bg-text {
+    position: absolute;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28vw;
+    color: rgba(201,168,76,0.04);
+    letter-spacing: -0.05em;
+    user-select: none;
+    white-space: nowrap;
+    animation: drift 20s linear infinite;
+  }
+  @keyframes drift {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-10%); }
+  }
+
+  /* Shoe visual using CSS art */
+  .shoe-stage {
+    position: relative;
+    width: 460px; height: 320px;
+    opacity: 0;
+    animation: fadeIn 1.5s 1s forwards;
+  }
+  .shoe-shadow {
+    position: absolute;
+    bottom: 20px; left: 50%;
+    transform: translateX(-50%);
+    width: 340px; height: 30px;
+    background: radial-gradient(ellipse, rgba(0,0,0,0.5) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: shadowPulse 3s ease-in-out infinite;
+  }
+  @keyframes shadowPulse {
+    0%, 100% { transform: translateX(-50%) scaleX(1); opacity: 0.5; }
+    50% { transform: translateX(-50%) scaleX(0.85); opacity: 0.3; }
+  }
+
+  .shoe-img-container {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    animation: float 4s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(-8deg); }
+    50% { transform: translateY(-18px) rotate(-8deg); }
+  }
+
+  /* CSS Shoe */
+  .css-shoe {
+    position: relative;
+    width: 380px; height: 220px;
+    filter: drop-shadow(0 30px 60px rgba(0,0,0,0.6));
+  }
+  .shoe-sole {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 42px;
+    background: linear-gradient(180deg, #2a2520 0%, #1a1510 100%);
+    border-radius: 0 0 40px 20px;
+    clip-path: polygon(2% 0%, 98% 0%, 100% 100%, 0% 100%);
+  }
+  .shoe-sole::after {
+    content: '';
+    position: absolute;
+    bottom: 4px; left: 10px; right: 10px;
+    height: 8px;
+    background: repeating-linear-gradient(90deg, var(--gold) 0px, var(--gold) 6px, transparent 6px, transparent 12px);
+    border-radius: 4px;
+    opacity: 0.4;
+  }
+  .shoe-midsole {
+    position: absolute;
+    bottom: 38px; left: 5px; right: 5px;
+    height: 28px;
+    background: linear-gradient(180deg, #e8dfc8 0%, #c5bda8 100%);
+    border-radius: 4px 4px 0 0;
+    clip-path: polygon(0% 30%, 100% 0%, 100% 100%, 0% 100%);
+  }
+  .shoe-upper {
+    position: absolute;
+    bottom: 60px; left: 0; right: 30px;
+    height: 140px;
+    background: linear-gradient(135deg, #1c1814 0%, #2d2620 40%, #1c1814 100%);
+    border-radius: 30px 80px 10px 10px;
+    clip-path: polygon(0% 70%, 15% 40%, 40% 10%, 80% 0%, 100% 30%, 100% 100%, 0% 100%);
+  }
+  .shoe-upper::before {
+    content: '';
+    position: absolute;
+    top: 30px; left: 20px; right: 40px;
+    height: 60px;
+    background: linear-gradient(135deg, rgba(201,168,76,0.15) 0%, transparent 60%);
+    border-radius: 20px;
+  }
+  .shoe-toe {
+    position: absolute;
+    bottom: 60px; right: 10px;
+    width: 80px; height: 70px;
+    background: linear-gradient(135deg, #2d2620, #1a1510);
+    border-radius: 50% 70% 40% 20%;
+    transform: rotate(10deg);
+  }
+  .shoe-laces {
+    position: absolute;
+    bottom: 110px; left: 40px; right: 80px;
+    height: 50px;
+  }
+  .lace {
+    position: absolute;
+    width: 70%;
+    height: 2px;
+    background: var(--cream);
+    opacity: 0.6;
+    border-radius: 2px;
+  }
+  .lace:nth-child(1) { top: 0; left: 0; transform: rotate(-2deg); }
+  .lace:nth-child(2) { top: 12px; left: 5px; width: 65%; transform: rotate(-1deg); }
+  .lace:nth-child(3) { top: 24px; left: 8px; width: 60%; transform: rotate(0deg); }
+  .lace:nth-child(4) { top: 36px; left: 10px; width: 55%; transform: rotate(1deg); }
+  .shoe-stripe {
+    position: absolute;
+    bottom: 80px; left: 20px; right: 100px;
+    height: 18px;
+    background: linear-gradient(90deg, var(--gold), rgba(201,168,76,0.3));
+    clip-path: polygon(0% 0%, 90% 0%, 100% 100%, 0% 100%);
+    opacity: 0.8;
+    border-radius: 3px;
+  }
+  .shoe-tab {
+    position: absolute;
+    top: 20px; left: 30px;
+    width: 30px; height: 50px;
+    background: linear-gradient(180deg, #2d2620, #1c1814);
+    border-radius: 4px 4px 0 0;
+    border-top: 3px solid var(--gold);
+  }
+  .hero-scroll-hint {
+    position: absolute;
+    bottom: 40px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    opacity: 0;
+    animation: fadeIn 1s 2s forwards;
+  }
+  .scroll-line {
+    width: 1px; height: 60px;
+    background: linear-gradient(180deg, transparent, var(--gold));
+    animation: scrollDrop 2s ease-in-out infinite;
+  }
+  @keyframes scrollDrop {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+  .scroll-text {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--mist);
+    writing-mode: vertical-rl;
+  }
+
+  /* MARQUEE */
+  .marquee-section {
+    padding: 30px 0;
+    background: var(--gold);
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .marquee-track {
+    display: inline-flex;
+    animation: marquee 18s linear infinite;
+  }
+  .marquee-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.2em;
+    color: var(--ink);
+    padding: 0 40px;
+    opacity: 0.85;
+  }
+  .marquee-dot { color: var(--ink); opacity: 0.4; }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* COLLECTION */
+  .collection {
+    padding: 120px 60px;
+    background: var(--white);
+    color: var(--ink);
+  }
+  .section-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 80px;
+  }
+  .section-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 1;
+    color: var(--ink);
+  }
+  .section-title em {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--rust);
+  }
+  .view-all {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--ink);
+    transition: color 0.3s, border-color 0.3s;
+  }
+  .view-all:hover { color: var(--rust); border-color: var(--rust); }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .product-card {
+    position: relative;
+    overflow: hidden;
+    background: var(--sand);
+    aspect-ratio: 3/4;
+    cursor: none;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .product-card:hover { transform: scale(1.01); z-index: 2; }
+  .product-card:first-child { grid-row: span 2; aspect-ratio: auto; }
+
+  .product-bg {
+    position: absolute; inset: 0;
+    transition: transform 0.6s ease;
+  }
+  .product-card:hover .product-bg { transform: scale(1.05); }
+
+  /* Product color schemes */
+  .card-1 .product-bg { background: linear-gradient(160deg, #1a1510 0%, #2d2620 50%, #0d0b08 100%); }
+  .card-2 .product-bg { background: linear-gradient(160deg, #e8dfc8 0%, #d4c9b0 100%); }
+  .card-3 .product-bg { background: linear-gradient(160deg, #b84a2f 0%, #8a3522 100%); }
+  .card-4 .product-bg { background: linear-gradient(160deg, #2a3528 0%, #1a2218 100%); }
+
+  .product-shoe {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-15deg);
+    transition: transform 0.4s ease;
+  }
+  .product-card:hover .product-shoe {
+    transform: translate(-50%, -55%) rotate(-10deg) scale(1.08);
+  }
+
+  /* Mini shoe variants */
+  .mini-shoe { position: relative; }
+  .ms { width: 220px; height: 130px; }
+  .ms-large { width: 300px; height: 175px; }
+
+  .mini-shoe .shoe-sole { height: 26px; }
+  .mini-shoe .shoe-midsole { bottom: 22px; height: 18px; }
+  .mini-shoe .shoe-upper { bottom: 36px; height: 86px; }
+  .mini-shoe .shoe-toe { bottom: 36px; width: 50px; height: 44px; }
+  .mini-shoe .shoe-stripe { bottom: 48px; height: 11px; }
+  .mini-shoe .shoe-tab { top: 12px; left: 18px; width: 18px; height: 30px; }
+  .mini-shoe .lace { height: 1.5px; }
+
+  .product-info {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 30px;
+    background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.4s ease;
+  }
+  .product-card:hover .product-info { transform: translateY(0); opacity: 1; }
+
+  .product-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.1em;
+    color: var(--cream);
+    display: block;
+  }
+  .product-meta {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 8px;
+  }
+  .product-price {
+    font-size: 0.85rem;
+    color: var(--gold);
+    font-weight: 500;
+  }
+  .product-tag {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.6);
+  }
+  .card-badge {
+    position: absolute;
+    top: 24px; right: 24px;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--gold);
+    padding: 6px 12px;
+    font-weight: 500;
+  }
+
+  /* EDITORIAL */
+  .editorial {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 80vh;
+    background: var(--ink);
+  }
+  .editorial-visual {
+    background: linear-gradient(135deg, #1a1510 0%, #2d2620 100%);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .editorial-visual::before {
+    content: 'FOOTERA';
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20vw;
+    color: rgba(201,168,76,0.06);
+    position: absolute;
+    white-space: nowrap;
+    transform: rotate(-20deg);
+  }
+  .editorial-big-shoe {
+    position: relative; z-index: 1;
+    animation: slowFloat 6s ease-in-out infinite;
+  }
+  @keyframes slowFloat {
+    0%, 100% { transform: translateY(0) rotate(-12deg); }
+    50% { transform: translateY(-20px) rotate(-12deg); }
+  }
+  .editorial-text {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 80px;
+  }
+  .editorial-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+  }
+  .editorial-headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 4vw, 4rem);
+    line-height: 1.2;
+    color: var(--cream);
+    margin-bottom: 32px;
+    font-weight: 300;
+  }
+  .editorial-headline strong {
+    font-family: 'Bebas Neue', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 1.2em;
+    display: block;
+    color: var(--gold);
+  }
+  .editorial-body {
+    font-size: 0.9rem;
+    line-height: 1.9;
+    color: var(--mist);
+    margin-bottom: 48px;
+    max-width: 420px;
+  }
+  .stats-row {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-bottom: 52px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(245,240,232,0.1);
+  }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    color: var(--cream);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-num span { color: var(--gold); font-size: 1.5rem; }
+  .stat-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mist);
+  }
+
+  /* CATEGORIES */
+  .categories {
+    padding: 120px 60px;
+    background: var(--ink);
+  }
+  .categories .section-title { color: var(--cream); }
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 60px;
+  }
+  .cat-card {
+    position: relative;
+    padding: 40px 30px;
+    border: 1px solid rgba(245,240,232,0.08);
+    overflow: hidden;
+    cursor: none;
+    transition: border-color 0.4s;
+    background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, transparent 100%);
+  }
+  .cat-card:hover { border-color: var(--gold); }
+  .cat-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(201,168,76,0.08) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .cat-card:hover::before { opacity: 1; }
+  .cat-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4rem;
+    color: rgba(201,168,76,0.15);
+    line-height: 1;
+    margin-bottom: 20px;
+    font-weight: 300;
+  }
+  .cat-icon {
+    font-size: 2rem; margin-bottom: 20px;
+  }
+  .cat-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.08em;
+    color: var(--cream);
+    margin-bottom: 12px;
+  }
+  .cat-count {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mist);
+  }
+  .cat-arrow {
+    position: absolute;
+    bottom: 30px; right: 30px;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(245,240,232,0.2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem;
+    color: var(--cream);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.3s;
+  }
+  .cat-card:hover .cat-arrow { opacity: 1; transform: translateY(0); border-color: var(--gold); color: var(--gold); }
+
+  /* TESTIMONIALS */
+  .testimonials {
+    padding: 120px 60px;
+    background: var(--cream);
+    color: var(--ink);
+    overflow: hidden;
+  }
+  .testimonials .section-title { color: var(--ink); }
+  .testi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 60px;
+  }
+  .testi-card {
+    padding: 50px 40px;
+    background: var(--white);
+    position: relative;
+    transition: background 0.3s;
+  }
+  .testi-card:hover { background: var(--ink); color: var(--cream); }
+  .testi-card:hover .testi-text { color: var(--mist); }
+  .testi-card:hover .testi-name { color: var(--gold); }
+  .testi-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    color: var(--gold);
+    line-height: 0.7;
+    margin-bottom: 24px;
+    font-weight: 300;
+  }
+  .testi-text {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: #444;
+    margin-bottom: 32px;
+    transition: color 0.3s;
+  }
+  .testi-stars { color: var(--gold); font-size: 0.8rem; margin-bottom: 16px; letter-spacing: 3px; }
+  .testi-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.1em;
+    color: var(--ink);
+    transition: color 0.3s;
+  }
+  .testi-role { font-size: 0.7rem; color: var(--mist); letter-spacing: 0.15em; text-transform: uppercase; }
+
+  /* NEWSLETTER */
+  .newsletter {
+    padding: 100px 60px;
+    background: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 60px;
+  }
+  .newsletter-left { flex: 1; }
+  .newsletter-tag {
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(10,8,6,0.6);
+    margin-bottom: 16px;
+  }
+  .newsletter-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 4vw, 4rem);
+    color: var(--ink);
+    line-height: 1;
+  }
+  .newsletter-right { flex: 1; }
+  .newsletter-form { display: flex; gap: 0; }
+  .newsletter-input {
+    flex: 1;
+    padding: 18px 24px;
+    font-size: 0.85rem;
+    background: rgba(10,8,6,0.1);
+    border: 1px solid rgba(10,8,6,0.2);
+    border-right: none;
+    color: var(--ink);
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.3s;
+  }
+  .newsletter-input::placeholder { color: rgba(10,8,6,0.4); }
+  .newsletter-input:focus { background: rgba(10,8,6,0.15); }
+  .newsletter-btn {
+    padding: 18px 32px;
+    background: var(--ink);
+    color: var(--gold);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border: none;
+    cursor: none;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    transition: background 0.3s;
+  }
+  .newsletter-btn:hover { background: #1a1510; }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink);
+    padding: 80px 60px 40px;
+  }
+  .footer-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 60px;
+    padding-bottom: 60px;
+    border-bottom: 1px solid rgba(245,240,232,0.08);
+  }
+  .footer-brand-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    letter-spacing: 0.15em;
+    color: var(--cream);
+    margin-bottom: 20px;
+  }
+  .footer-tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--gold);
+    margin-bottom: 24px;
+  }
+  .footer-desc {
+    font-size: 0.82rem;
+    line-height: 1.9;
+    color: var(--mist);
+    max-width: 280px;
+  }
+  .footer-col-title {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+  }
+  .footer-links { list-style: none; }
+  .footer-links li { margin-bottom: 12px; }
+  .footer-links a {
+    font-size: 0.85rem;
+    color: var(--mist);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--cream); }
+  .footer-bottom {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 36px;
+  }
+  .footer-copy {
+    font-size: 0.72rem;
+    color: rgba(159,168,158,0.5);
+    letter-spacing: 0.05em;
+  }
+  .footer-socials { display: flex; gap: 20px; }
+  .social-link {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(245,240,232,0.12);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--mist);
+    text-decoration: none;
+    font-size: 0.8rem;
+    transition: border-color 0.3s, color 0.3s;
+  }
+  .social-link:hover { border-color: var(--gold); color: var(--gold); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* REVEAL ON SCROLL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* Noise overlay */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0.4;
+  }
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">FOOTERA</a>
+  <ul class="nav-links">
+    <li><a href="#collection">Collection</a></li>
+    <li><a href="#editorial">Story</a></li>
+    <li><a href="#categories">Categories</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+  </ul>
+  <a href="#collection" class="nav-cta">Shop Now</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="hero-tag">✦ New Season 2026 — The Vault Collection</p>
+    <h1 class="hero-title">
+      Walk<br>
+      <em>Different.</em>
+    </h1>
+    <p class="hero-sub">Footwear engineered for those who refuse to blend in. Each pair is a statement, a craft, a legacy worn on your feet.</p>
+    <div class="hero-actions">
+      <a href="#collection" class="btn-primary">Explore Collection</a>
+      <a href="#editorial" class="btn-ghost">Our Story →</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-bg-text">FOOTERA</div>
+    <div class="shoe-stage">
+      <div class="shoe-shadow"></div>
+      <div class="shoe-img-container">
+        <div class="css-shoe">
+          <div class="shoe-tab"></div>
+          <div class="shoe-upper"></div>
+          <div class="shoe-toe"></div>
+          <div class="shoe-stripe"></div>
+          <div class="shoe-laces">
+            <div class="lace"></div>
+            <div class="lace"></div>
+            <div class="lace"></div>
+            <div class="lace"></div>
+          </div>
+          <div class="shoe-midsole"></div>
+          <div class="shoe-sole"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll-hint">
+    <span class="scroll-text">Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <span class="marquee-item">HANDCRAFTED EXCELLENCE</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">PREMIUM LEATHER</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">WALK DIFFERENT</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">SINCE 2012</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">VAULT COLLECTION 2026</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">FREE WORLDWIDE SHIPPING</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">HANDCRAFTED EXCELLENCE</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">PREMIUM LEATHER</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">WALK DIFFERENT</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">SINCE 2012</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">VAULT COLLECTION 2026</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">FREE WORLDWIDE SHIPPING</span><span class="marquee-dot">✦</span>
+  </div>
+</div>
+
+<!-- COLLECTION -->
+<section class="collection" id="collection">
+  <div class="section-header reveal">
+    <div>
+      <p class="section-label">✦ Curated Drops</p>
+      <h2 class="section-title">The <em>Vault</em><br>Collection</h2>
+    </div>
+    <a href="#" class="view-all">View All Styles</a>
+  </div>
+
+  <div class="products-grid reveal">
+
+    <!-- Card 1 - Large -->
+    <div class="product-card card-1">
+      <div class="product-bg"></div>
+      <div class="card-badge">New Drop</div>
+      <div class="product-shoe">
+        <div class="css-shoe ms-large" style="filter: drop-shadow(0 20px 40px rgba(0,0,0,0.8));">
+          <div class="shoe-tab"></div>
+          <div class="shoe-upper" style="background: linear-gradient(135deg, #0f0c09, #1c1814);"></div>
+          <div class="shoe-toe" style="background: linear-gradient(135deg, #1a1510, #0d0b08);"></div>
+          <div class="shoe-stripe"></div>
+          <div class="shoe-laces"><div class="lace"></div><div class="lace"></div><div class="lace"></div></div>
+          <div class="shoe-midsole" style="background: linear-gradient(180deg, #c9a84c, #a88a3c);"></div>
+          <div class="shoe-sole"></div>
+        </div>
+      </div>
+      <div class="product-info">
+        <span class="product-name">MIDNIGHT APEX</span>
+        <div class="product-meta">
+          <span class="product-price">$389</span>
+          <span class="product-tag">Limited Edition</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="product-card card-2">
+      <div class="product-bg"></div>
+      <div class="product-shoe">
+        <div class="css-shoe ms" style="filter: drop-shadow(0 15px 30px rgba(0,0,0,0.4));">
+          <div class="shoe-tab" style="background: linear-gradient(180deg, #8a3522, #6a2518); border-top-color: var(--cream);"></div>
+          <div class="shoe-upper" style="background: linear-gradient(135deg, #f5f0e8, #e8dfc8);"></div>
+          <div class="shoe-toe" style="background: linear-gradient(135deg, #e8dfc8, #d4c9b0);"></div>
+          <div class="shoe-stripe" style="background: linear-gradient(90deg, #b84a2f, rgba(184,74,47,0.3));"></div>
+          <div class="shoe-laces"><div class="lace" style="background: #2a2520;"></div><div class="lace" style="background: #2a2520;"></div><div class="lace" style="background: #2a2520;"></div></div>
+          <div class="shoe-midsole" style="background: linear-gradient(180deg, #fff, #e8e0d0);"></div>
+          <div class="shoe-sole" style="background: linear-gradient(180deg, #3a3530, #1a1510);"></div>
+        </div>
+      </div>
+      <div class="product-info">
+        <span class="product-name">DUNE RUNNER</span>
+        <div class="product-meta">
+          <span class="product-price">$265</span>
+          <span class="product-tag">Bestseller</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="product-card card-3">
+      <div class="product-bg"></div>
+      <div class="card-badge" style="background: var(--cream); color: var(--rust);">Exclusive</div>
+      <div class="product-shoe">
+        <div class="css-shoe ms" style="filter: drop-shadow(0 15px 30px rgba(0,0,0,0.5));">
+          <div class="shoe-tab" style="background: linear-gradient(180deg, #c9a84c, #a88a3c); border-top-color: #fff;"></div>
+          <div class="shoe-upper" style="background: linear-gradient(135deg, #b84a2f, #8a3522);"></div>
+          <div class="shoe-toe" style="background: linear-gradient(135deg, #8a3522, #6a2518);"></div>
+          <div class="shoe-stripe" style="background: linear-gradient(90deg, #f5f0e8, rgba(245,240,232,0.3));"></div>
+          <div class="shoe-laces"><div class="lace" style="background: #f5f0e8;"></div><div class="lace" style="background: #f5f0e8;"></div><div class="lace" style="background: #f5f0e8;"></div></div>
+          <div class="shoe-midsole" style="background: linear-gradient(180deg, #c9a84c, #a88a3c);"></div>
+          <div class="shoe-sole"></div>
+        </div>
+      </div>
+      <div class="product-info">
+        <span class="product-name">EMBER STRIKE</span>
+        <div class="product-meta">
+          <span class="product-price">$445</span>
+          <span class="product-tag">Vault Drop</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="product-card card-4">
+      <div class="product-bg"></div>
+      <div class="product-shoe">
+        <div class="css-shoe ms" style="filter: drop-shadow(0 15px 30px rgba(0,0,0,0.5));">
+          <div class="shoe-tab" style="background: linear-gradient(180deg, #2a3528, #1a2218); border-top-color: var(--gold);"></div>
+          <div class="shoe-upper" style="background: linear-gradient(135deg, #2a3528, #1a2218);"></div>
+          <div class="shoe-toe" style="background: linear-gradient(135deg, #1a2218, #0f1510);"></div>
+          <div class="shoe-stripe" style="background: linear-gradient(90deg, #c9a84c, rgba(201,168,76,0.2));"></div>
+          <div class="shoe-laces"><div class="lace" style="background: #c9a84c; opacity: 0.9;"></div><div class="lace" style="background: #c9a84c; opacity: 0.9;"></div><div class="lace" style="background: #c9a84c; opacity: 0.9;"></div></div>
+          <div class="shoe-midsole" style="background: linear-gradient(180deg, #3a4538, #2a3528);"></div>
+          <div class="shoe-sole"></div>
+        </div>
+      </div>
+      <div class="product-info">
+        <span class="product-name">FOREST OPS</span>
+        <div class="product-meta">
+          <span class="product-price">$310</span>
+          <span class="product-tag">Tactical Series</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- EDITORIAL -->
+<section class="editorial" id="editorial">
+  <div class="editorial-visual">
+    <div class="editorial-big-shoe">
+      <div class="css-shoe" style="width:360px;height:210px;filter:drop-shadow(0 40px 80px rgba(201,168,76,0.2));">
+        <div class="shoe-tab"></div>
+        <div class="shoe-upper" style="background:linear-gradient(135deg,#1c1814,#2d2620);"></div>
+        <div class="shoe-toe"></div>
+        <div class="shoe-stripe" style="background:linear-gradient(90deg,#c9a84c,rgba(201,168,76,0.1));"></div>
+        <div class="shoe-laces"><div class="lace"></div><div class="lace"></div><div class="lace"></div><div class="lace"></div></div>
+        <div class="shoe-midsole" style="background:linear-gradient(180deg,#c9a84c,#8a6a28);"></div>
+        <div class="shoe-sole"></div>
+      </div>
+    </div>
+  </div>
+  <div class="editorial-text">
+    <p class="editorial-label reveal">✦ Our Philosophy</p>
+    <h2 class="editorial-headline reveal">
+      Crafted for<br>those who
+      <strong>DEFY ORDINARY</strong>
+    </h2>
+    <p class="editorial-body reveal">Every Footera shoe begins as a sketch, evolves through weeks of prototyping, and is finished by hands that have spent decades perfecting their craft. We don't make shoes. We build confidence, one stitch at a time.</p>
+    <div class="stats-row reveal">
+      <div>
+        <div class="stat-num">14<span>yr</span></div>
+        <div class="stat-label">Of Craft</div>
+      </div>
+      <div>
+        <div class="stat-num">80<span>k+</span></div>
+        <div class="stat-label">Happy Walkers</div>
+      </div>
+      <div>
+        <div class="stat-num">42<span>+</span></div>
+        <div class="stat-label">Countries</div>
+      </div>
+    </div>
+    <a href="#collection" class="btn-primary reveal" style="display:inline-block;">Discover the Craft</a>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="categories" id="categories">
+  <div class="section-header reveal">
+    <div>
+      <p class="section-label" style="color: rgba(201,168,76,0.6);">✦ Shop by Style</p>
+      <h2 class="section-title">Find Your<br><em style="color:var(--gold);">Perfect Fit</em></h2>
+    </div>
+  </div>
+  <div class="cat-grid">
+    <div class="cat-card reveal">
+      <div class="cat-number">01</div>
+      <div class="cat-icon">👟</div>
+      <div class="cat-name">Sneakers</div>
+      <div class="cat-count">128 Styles</div>
+      <div class="cat-arrow">→</div>
+    </div>
+    <div class="cat-card reveal">
+      <div class="cat-number">02</div>
+      <div class="cat-icon">🥾</div>
+      <div class="cat-name">Boots</div>
+      <div class="cat-count">64 Styles</div>
+      <div class="cat-arrow">→</div>
+    </div>
+    <div class="cat-card reveal">
+      <div class="cat-number">03</div>
+      <div class="cat-icon">🩴</div>
+      <div class="cat-name">Loafers</div>
+      <div class="cat-count">45 Styles</div>
+      <div class="cat-arrow">→</div>
+    </div>
+    <div class="cat-card reveal">
+      <div class="cat-number">04</div>
+      <div class="cat-icon">🏃</div>
+      <div class="cat-name">Sport</div>
+      <div class="cat-count">92 Styles</div>
+      <div class="cat-arrow">→</div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="testimonials">
+  <div class="section-header reveal">
+    <div>
+      <p class="section-label">✦ Real Voices</p>
+      <h2 class="section-title">Worn. Loved.<br><em style="color:var(--rust);">Legendary.</em></h2>
+    </div>
+  </div>
+  <div class="testi-grid reveal">
+    <div class="testi-card">
+      <div class="testi-quote">"</div>
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">The Midnight Apex changed the way I think about footwear. I've never received more compliments on a single item of clothing in my entire life.</p>
+      <div class="testi-name">MARCUS CHEN</div>
+      <div class="testi-role">Creative Director, NYC</div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-quote">"</div>
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">I've owned luxury shoes from five different continents. Footera sits comfortably at the top — for quality, feel, and that indescribable confidence they give you.</p>
+      <div class="testi-name">SOFIA REYES</div>
+      <div class="testi-role">Architect, Barcelona</div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-quote">"</div>
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">Three years in and my Ember Strike pair still looks like I just bought them. That's not just good shoes — that's an heirloom for your feet.</p>
+      <div class="testi-name">JAMES OKAFOR</div>
+      <div class="testi-role">Entrepreneur, Lagos</div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<div class="newsletter">
+  <div class="newsletter-left reveal">
+    <p class="newsletter-tag">✦ Stay in the Loop</p>
+    <h2 class="newsletter-title">Drop<br>Alerts.<br>First.</h2>
+  </div>
+  <div class="newsletter-right reveal">
+    <p style="font-size:0.85rem; color:rgba(10,8,6,0.6); margin-bottom:24px; line-height:1.7;">Get exclusive early access to new drops, member discounts, and behind-the-scenes content from our ateliers.</p>
+    <div class="newsletter-form">
+      <input type="email" class="newsletter-input" placeholder="Your email address">
+      <button class="newsletter-btn">Subscribe</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand-name">FOOTERA</div>
+      <div class="footer-tagline">Walk Different.</div>
+      <p class="footer-desc">Premium footwear born from the belief that every step you take should feel extraordinary. Designed for the bold. Built to last a lifetime.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Shop</div>
+      <ul class="footer-links">
+        <li><a href="#">New Arrivals</a></li>
+        <li><a href="#">Sneakers</a></li>
+        <li><a href="#">Boots</a></li>
+        <li><a href="#">Loafers</a></li>
+        <li><a href="#">Sport</a></li>
+        <li><a href="#">Sale</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Brand</div>
+      <ul class="footer-links">
+        <li><a href="#">Our Story</a></li>
+        <li><a href="#">Craftsmanship</a></li>
+        <li><a href="#">Sustainability</a></li>
+        <li><a href="#">Press</a></li>
+        <li><a href="#">Careers</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Support</div>
+      <ul class="footer-links">
+        <li><a href="#">Size Guide</a></li>
+        <li><a href="#">Shipping</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">Care Guide</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2026 Footera. All rights reserved. Walk Different™</p>
+    <div class="footer-socials">
+      <a href="#" class="social-link">𝕏</a>
+      <a href="#" class="social-link">in</a>
+      <a href="#" class="social-link">ig</a>
+      <a href="#" class="social-link">yt</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX; mouseY = e.clientY;
+    cursor.style.left = mouseX + 'px';
+    cursor.style.top = mouseY + 'px';
+  });
+
+  function animateRing() {
+    ringX += (mouseX - ringX) * 0.12;
+    ringY += (mouseY - ringY) * 0.12;
+    ring.style.left = ringX + 'px';
+    ring.style.top = ringY + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('a, button, .product-card, .cat-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform = 'translate(-50%, -50%) scale(2)';
+      cursor.style.background = 'rgba(201,168,76,0.5)';
+      ring.style.width = '60px';
+      ring.style.height = '60px';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+      cursor.style.background = 'var(--gold)';
+      ring.style.width = '36px';
+      ring.style.height = '36px';
+    });
+  });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, 100);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Nav scroll effect
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 80) {
+      nav.style.mixBlendMode = 'normal';
+      nav.style.background = 'rgba(10,8,6,0.95)';
+      nav.style.backdropFilter = 'blur(20px)';
+      nav.style.borderBottom = '1px solid rgba(245,240,232,0.06)';
+    } else {
+      nav.style.mixBlendMode = 'difference';
+      nav.style.background = 'transparent';
+      nav.style.backdropFilter = 'none';
+      nav.style.borderBottom = 'none';
+    }
+  });
+</script>
+</body>
+</html>
